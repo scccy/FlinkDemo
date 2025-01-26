@@ -25,13 +25,13 @@ public class ConnectKeybyDemo {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(2);
 
-        DataStreamSource<Tuple2<Integer, String>> source1 = env.fromElements(
+        DataStreamSource<Tuple2<Integer, String>> source1 = env.fromData(
                 Tuple2.of(1, "a1"),
                 Tuple2.of(1, "a2"),
                 Tuple2.of(2, "b"),
                 Tuple2.of(3, "c")
         );
-        DataStreamSource<Tuple3<Integer, String, Integer>> source2 = env.fromElements(
+        DataStreamSource<Tuple3<Integer, String, Integer>> source2 = env.fromData(
                 Tuple3.of(1, "aa1", 1),
                 Tuple3.of(1, "aa2", 2),
                 Tuple3.of(2, "bb", 1),
@@ -52,7 +52,7 @@ public class ConnectKeybyDemo {
          *  2、每条流有数据来的时候，除了存变量中， 不知道对方是否有匹配的数据，要去另一条流存的变量中 查找是否有匹配上的
          */
         SingleOutputStreamOperator<String> process = connectKeyby.process(
-                new CoProcessFunction<Tuple2<Integer, String>, Tuple3<Integer, String, Integer>, String>() {
+                new CoProcessFunction<>() {
                     // 每条流定义一个hashmap，用来存数据
                     Map<Integer, List<Tuple2<Integer, String>>> s1Cache = new HashMap<>();
                     Map<Integer, List<Tuple3<Integer, String, Integer>>> s2Cache = new HashMap<>();
@@ -60,6 +60,7 @@ public class ConnectKeybyDemo {
 
                     /**
                      * 第一条流的处理逻辑
+                     *
                      * @param value 第一条流的数据
                      * @param ctx   上下文
                      * @param out   采集器
@@ -90,6 +91,7 @@ public class ConnectKeybyDemo {
 
                     /**
                      * 第二条流的处理逻辑
+                     *
                      * @param value 第二条流的数据
                      * @param ctx   上下文
                      * @param out   采集器

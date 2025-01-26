@@ -17,12 +17,12 @@ public class ConnectDemo {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(1);
 
-//        DataStreamSource<Integer> source1 = env.fromElements(1, 2, 3);
-//        DataStreamSource<String> source2 = env.fromElements("a", "b", "c");
+//        DataStreamSource<Integer> source1 = env.fromData(1, 2, 3);
+//        DataStreamSource<String> source2 = env.fromData("a", "b", "c");
 
         SingleOutputStreamOperator<Integer> source1 = env
                 .socketTextStream("hadoop102", 7777)
-                .map(i -> Integer.parseInt(i));
+                .map(Integer::parseInt);
 
         DataStreamSource<String> source2 = env.socketTextStream("hadoop102", 8888);
 
